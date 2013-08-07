@@ -22,36 +22,6 @@ NSString* getSelectorName(SEL selector, Class class, bool isMock)
 	return [NSString stringWithFormat:@"%@-%@-%@", isMockString, NSStringFromClass(class), NSStringFromSelector(selector)];
 }
 
-bool performCallWithMethodInterceptorInfo(MethodInterceptorInfo *info, id self, SEL _cmd)
-{
-	SEL originalSelector = NSSelectorFromString(getSelectorName(_cmd, [self class], false));
-	
-	if (!info)
-	{
-		return false;
-	}
-	
-	switch (info.blockExecutionType)
-	{
-		case BlockExecutionTypeOverrideOriginalCall:
-			info.completionBlock(self);
-			return true;
-			
-		case BlockExecutionTypeAfterOriginalCall:
-			objc_msgSend(self, originalSelector);
-			info.completionBlock(self);
-			return true;
-			
-		case BlockExecutionTypeBeforeOriginalCall:
-			info.completionBlock(self);
-			objc_msgSend(self, originalSelector);
-			return true;
-			
-		default:
-			return false;
-	}
-}
-
 id swizzledMethod(id self, SEL _cmd)
 {
 	id methodResult = nil;
