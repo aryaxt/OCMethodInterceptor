@@ -52,20 +52,40 @@ bool performCallWithMethodInterceptorInfo(MethodInterceptorInfo *info, id self, 
 	}
 }
 
-void swizzledMethod(id self, SEL _cmd)
+id swizzledMethod(id self, SEL _cmd)
 {
-	BOOL madeOriginalCall = NO;
-	
-	MethodInterceptorInfo *instanceInfo = [methodInterceptorInfoDictionary objectForKey:[NSString stringWithFormat:@"%p", self]];
-	madeOriginalCall = performCallWithMethodInterceptorInfo(instanceInfo, self, _cmd);
-	
-	//MethodInterceptorInfo *globalInfo = [methodInterceptorInfoDictionary objectForKey:NSStringFromClass([self class])];
-	//performCallWithMethodInterceptorInfo(globalInfo, self, _cmd);
-	
+	id methodResult = nil;
 	SEL originalSelector = NSSelectorFromString(getSelectorName(_cmd, [self class], false));
+	MethodInterceptorInfo *instanceInfo = [methodInterceptorInfoDictionary objectForKey:[NSString stringWithFormat:@"%p", self]];
 	
-	if (!madeOriginalCall)
-		objc_msgSend(self, originalSelector);
+	if (instanceInfo)
+	{
+		switch (instanceInfo.blockExecutionType)
+		{
+			case BlockExecutionTypeOverrideOriginalCall:
+				instanceInfo.completionBlock(self);
+				break;
+				
+			case BlockExecutionTypeAfterOriginalCall:
+				methodResult = objc_msgSend(self, originalSelector);
+				instanceInfo.completionBlock(self);
+				break;
+				
+			case BlockExecutionTypeBeforeOriginalCall:
+				instanceInfo.completionBlock(self);
+				methodResult = objc_msgSend(self, originalSelector);
+				break;
+				
+			default:
+				break;
+		}
+	}
+	else
+	{
+		methodResult = objc_msgSend(self, originalSelector);
+	}
+	
+	return methodResult;
 }
 
 - (void)interceptMethod:(SEL)selector withExecuteBlock:(InstanceMethodInterceptorCompletion)block andExecutionType:(BlockExecutionType)executionType
