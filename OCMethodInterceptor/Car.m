@@ -10,9 +10,10 @@
 
 @implementation Car
 
-- (void)start
+- (NSString *)start
 {
 	NSLog(@"Car Start");
+	return @"YAY";
 }
 
 @end

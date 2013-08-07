@@ -19,18 +19,18 @@
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
 	
-	[Car interceptAllMethod:@selector(start) withExecuteBlock:^(id instance){
+	/*[Car interceptAllMethod:@selector(start) withExecuteBlock:^(id instance){
 		NSLog(@"Intercept all instances");
-	}andExecutionType:BlockExecutionTypeOverrideOriginalCall];
+	}andExecutionType:BlockExecutionTypeOverrideOriginalCall];*/
 	
 	Car *car = [[Car alloc] init];
-	[car start];
+	//[car start];
 	
 	// Should not call original
 	[car interceptMethod:@selector(start) withExecuteBlock:^(id instance){
 		NSLog(@"Overrides start");
 	} andExecutionType:BlockExecutionTypeOverrideOriginalCall];
-	[car start];
+	NSString *result = [car start];
 	
 	NSLog(@"============================================");
 	
@@ -48,6 +48,7 @@
 	} andExecutionType:BlockExecutionTypeBeforeOriginalCall];
 	[car start];
 	
+	NSLog(@"%@", result);
 	
     return YES;
 }

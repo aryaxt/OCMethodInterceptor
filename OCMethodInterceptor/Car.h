@@ -10,6 +10,6 @@
 
 @interface Car : NSObject
 
-- (void)start;
+- (NSString *)start;
 
 @end

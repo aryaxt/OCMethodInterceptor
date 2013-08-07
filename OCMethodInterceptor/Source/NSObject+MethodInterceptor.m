@@ -15,68 +15,76 @@
 
 static NSMutableDictionary *methodInterceptorInfoDictionary;
 
-NSString* getSelectorName(SEL selector, id classOrInstance, bool isMock, bool isGlobal)
+NSString* getSelectorName(SEL selector, Class class, bool isMock)
 {
 	NSString *isMockString = (isMock) ? @"mock" : @"original";
-	NSString *isGlobalString = (isGlobal) ? NSStringFromClass([classOrInstance class]) : [NSString stringWithFormat:@"%p", classOrInstance];
 	
-	return [NSString stringWithFormat:@"%@-%@-%@", isMockString, isGlobalString, NSStringFromSelector(selector)];
+	return [NSString stringWithFormat:@"%@-%@-%@", isMockString, NSStringFromClass(class), NSStringFromSelector(selector)];
 }
 
-void performCallWithMethodInterceptorInfo(MethodInterceptorInfo *info, id self, SEL _cmd)
+bool performCallWithMethodInterceptorInfo(MethodInterceptorInfo *info, id self, SEL _cmd)
 {
-	SEL originalSelector = NSSelectorFromString(getSelectorName(_cmd, self, false, true));
+	SEL originalSelector = NSSelectorFromString(getSelectorName(_cmd, [self class], false));
 	
 	if (!info)
 	{
-		objc_msgSend(self, originalSelector);
-		return;
+		return false;
 	}
 	
 	switch (info.blockExecutionType)
 	{
 		case BlockExecutionTypeOverrideOriginalCall:
 			info.completionBlock(self);
-			break;
+			return true;
 			
 		case BlockExecutionTypeAfterOriginalCall:
 			objc_msgSend(self, originalSelector);
 			info.completionBlock(self);
-			break;
+			return true;
 			
 		case BlockExecutionTypeBeforeOriginalCall:
 			info.completionBlock(self);
 			objc_msgSend(self, originalSelector);
-			break;
+			return true;
+			
+		default:
+			return false;
 	}
 }
 
 void swizzledMethod(id self, SEL _cmd)
 {
-	MethodInterceptorInfo *globalInfo = [methodInterceptorInfoDictionary objectForKey:getSelectorName(_cmd, self, true, true)];
-	performCallWithMethodInterceptorInfo(globalInfo, self, _cmd);
+	BOOL madeOriginalCall = NO;
 	
-	MethodInterceptorInfo *instanceInfo = [methodInterceptorInfoDictionary objectForKey:getSelectorName(_cmd, self, true, false)];
-	performCallWithMethodInterceptorInfo(instanceInfo, self, _cmd);
+	MethodInterceptorInfo *instanceInfo = [methodInterceptorInfoDictionary objectForKey:[NSString stringWithFormat:@"%p", self]];
+	madeOriginalCall = performCallWithMethodInterceptorInfo(instanceInfo, self, _cmd);
+	
+	//MethodInterceptorInfo *globalInfo = [methodInterceptorInfoDictionary objectForKey:NSStringFromClass([self class])];
+	//performCallWithMethodInterceptorInfo(globalInfo, self, _cmd);
+	
+	SEL originalSelector = NSSelectorFromString(getSelectorName(_cmd, [self class], false));
+	
+	if (!madeOriginalCall)
+		objc_msgSend(self, originalSelector);
 }
 
 - (void)interceptMethod:(SEL)selector withExecuteBlock:(InstanceMethodInterceptorCompletion)block andExecutionType:(BlockExecutionType)executionType
-{	
+{
 	MethodInterceptorInfo *info = [[MethodInterceptorInfo alloc] init];
     info.completionBlock = block;
 	info.blockExecutionType = executionType;
 	
-	NSString *mockSelectorName = getSelectorName(selector, self, true, false);
+	NSString *mockSelectorName = getSelectorName(selector, [self class], true);
 	SEL mockSelector = NSSelectorFromString(mockSelectorName);
 	
-	NSString *originalSelectorName = getSelectorName(selector, self, false, false);
+	NSString *originalSelectorName = getSelectorName(selector, [self class], false);
 	SEL originalSelector = NSSelectorFromString(originalSelectorName);
 	IMP implementation = [self methodForSelector:selector];
 	
 	if (!methodInterceptorInfoDictionary)
 		methodInterceptorInfoDictionary = [NSMutableDictionary dictionary];
 	
-	[methodInterceptorInfoDictionary setObject:info forKey:mockSelectorName];
+	[methodInterceptorInfoDictionary setObject:info forKey:[NSString stringWithFormat:@"%p", self]];
 	
 	if (![self respondsToSelector:originalSelector] && ![self respondsToSelector:mockSelector])
 	{
@@ -89,23 +97,28 @@ void swizzledMethod(id self, SEL _cmd)
 	}
 }
 
+/*
+ // Use this to resuse logic
+ class_isMetaClass(object_getClass(class));
+ */
+
 + (void)interceptAllMethod:(SEL)selector withExecuteBlock:(InstanceMethodInterceptorCompletion)block andExecutionType:(BlockExecutionType)executionType
 {
 	MethodInterceptorInfo *info = [[MethodInterceptorInfo alloc] init];
     info.completionBlock = block;
 	info.blockExecutionType = executionType;
 	
-	NSString *mockSelectorName = getSelectorName(selector, self, true, true);
+	NSString *mockSelectorName = getSelectorName(selector, self, true);
 	SEL mockSelector = NSSelectorFromString(mockSelectorName);
 	
-	NSString *originalSelectorName = getSelectorName(selector, self, false, true);
+	NSString *originalSelectorName = getSelectorName(selector, self, false);
 	SEL originalSelector = NSSelectorFromString(originalSelectorName);
 	IMP implementation = [self methodForSelector:selector];
 	
 	if (!methodInterceptorInfoDictionary)
 		methodInterceptorInfoDictionary = [NSMutableDictionary dictionary];
 	
-	[methodInterceptorInfoDictionary setObject:info forKey:mockSelectorName];
+	[methodInterceptorInfoDictionary setObject:info forKey:NSStringFromClass(self)];
 	
 	// If not already swizzled
 	if (![self respondsToSelector:originalSelector] && ![self respondsToSelector:mockSelector])
