@@ -16,4 +16,9 @@
 	return @"YAY";
 }
 
+- (void)stop
+{
+	NSLog(@"Car Stop");
+}
+
 @end

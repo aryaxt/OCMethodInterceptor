@@ -11,5 +11,6 @@
 @interface Car : NSObject
 
 - (NSString *)start;
+- (void)stop;
 
 @end

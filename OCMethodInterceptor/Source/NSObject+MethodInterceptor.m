@@ -22,12 +22,32 @@ NSString* getSelectorName(SEL selector, Class class, bool isMock)
 	return [NSString stringWithFormat:@"%@-%@-%@", isMockString, NSStringFromClass(class), NSStringFromSelector(selector)];
 }
 
+void perform_objc_msgSend(id self, SEL _cmd, id *result)
+{
+	char returnType[1];
+	Method originalMethod = class_getInstanceMethod([self class], _cmd);
+	method_getReturnType(originalMethod, returnType, 1);
+	
+	if (returnType[0] == 'v')
+		objc_msgSend(self, _cmd);
+	else
+		*result = objc_msgSend(self, _cmd);
+}
+
 id swizzledMethod(id self, SEL _cmd)
 {
-	id methodResult = nil;
+	id originalMethodResult;
 	SEL originalSelector = NSSelectorFromString(getSelectorName(_cmd, [self class], false));
 	MethodInterceptorInfo *instanceInfo = [methodInterceptorInfoDictionary objectForKey:[NSString stringWithFormat:@"%p", self]];
 	
+	BOOL isVoidMethod = NO;
+	Method originalMethod = class_getInstanceMethod([self class], _cmd);
+	char returnType[1];
+	method_getReturnType(originalMethod, returnType, 1);
+	
+	if (returnType[0] == 'v')
+		isVoidMethod = YES;
+		
 	if (instanceInfo)
 	{
 		switch (instanceInfo.blockExecutionType)
@@ -37,13 +57,13 @@ id swizzledMethod(id self, SEL _cmd)
 				break;
 				
 			case BlockExecutionTypeAfterOriginalCall:
-				methodResult = objc_msgSend(self, originalSelector);
+				perform_objc_msgSend(self, originalSelector, &originalMethodResult);
 				instanceInfo.completionBlock(self);
 				break;
 				
 			case BlockExecutionTypeBeforeOriginalCall:
 				instanceInfo.completionBlock(self);
-				methodResult = objc_msgSend(self, originalSelector);
+				perform_objc_msgSend(self, originalSelector, &originalMethodResult);
 				break;
 				
 			default:
@@ -52,10 +72,10 @@ id swizzledMethod(id self, SEL _cmd)
 	}
 	else
 	{
-		methodResult = objc_msgSend(self, originalSelector);
+		perform_objc_msgSend(self, originalSelector, &originalMethodResult);
 	}
 	
-	return methodResult;
+	return originalMethodResult;
 }
 
 - (void)interceptMethod:(SEL)selector withExecuteBlock:(InstanceMethodInterceptorCompletion)block andExecutionType:(BlockExecutionType)executionType
@@ -78,11 +98,12 @@ id swizzledMethod(id self, SEL _cmd)
 	
 	if (![self respondsToSelector:originalSelector] && ![self respondsToSelector:mockSelector])
 	{
-		class_addMethod([self class], mockSelector, (IMP)swizzledMethod, "v@:@");
-		class_addMethod([self class], originalSelector, implementation, "v@:@");
-		
 		Method originalMethod = class_getInstanceMethod([self class], selector);
+		class_addMethod([self class], originalSelector, implementation, method_getTypeEncoding(originalMethod));
+		
+		class_addMethod([self class], mockSelector, (IMP)swizzledMethod, "v@:@");
 		Method swizzleMethod = class_getInstanceMethod([self class], mockSelector);
+		
 		method_exchangeImplementations(originalMethod, swizzleMethod);
 	}
 }
