@@ -7,7 +7,13 @@
 //
 
 #import <SenTestingKit/SenTestingKit.h>
+#import "NSObject+MethodInterceptor.h"
+#import "OCMock.h"
+#import "Car.h"
 
 @interface OCMethodInterceptorTests : SenTestCase
+
+@property (nonatomic, strong) Car *car;
+@property (nonatomic, strong) OCMockObject *engine;
 
 @end

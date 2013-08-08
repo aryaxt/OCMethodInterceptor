@@ -27,7 +27,7 @@
 	//[car start];
 	
 	// Should not call original
-	[car interceptMethod:@selector(start) withExecuteBlock:^(id instance){
+	/*[car interceptMethod:@selector(start) withExecuteBlock:^(id instance){
 		NSLog(@"Overrides start");
 	} andExecutionType:BlockExecutionTypeOverrideOriginalCall];
 	NSString *result = [car start];
@@ -46,9 +46,19 @@
 	[car interceptMethod:@selector(start) withExecuteBlock:^(id instance){
 		NSLog(@"Before start");
 	} andExecutionType:BlockExecutionTypeBeforeOriginalCall];
-	[car start];
+	[car start];*/
 	
-	NSLog(@"%@", result);
+	/*[car interceptMethod:@selector(stop) withExecuteBlock:^(id object){
+		NSLog(@"Before Stop");
+	}andExecutionType:BlockExecutionTypeBeforeOriginalCall];
+	[car stop];
+	
+	//NSLog(@"%@", result);
+	
+	[car interceptMethod:@selector(start) withExecuteBlock:^(id instance){
+		NSLog(@"Before start");
+	} andExecutionType:BlockExecutionTypeBeforeOriginalCall];
+	id something = [car start];*/
 	
     return YES;
 }

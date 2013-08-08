@@ -10,15 +10,14 @@
 
 @implementation Car
 
-- (NSString *)start
+- (NSString *)startEngine
 {
-	NSLog(@"Car Start");
-	return @"YAY";
+	return [self.engine startEngine];
 }
 
-- (void)stop
+- (void)stopEngine
 {
-	NSLog(@"Car Stop");
+	[self.engine stopEngine];
 }
 
 @end

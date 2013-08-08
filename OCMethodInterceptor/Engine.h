@@ -1,17 +1,14 @@
 //
-//  Car.h
-//  MethodInterceptor
+//  Engine.h
+//  OCMethodInterceptor
 //
-//  Created by Aryan Gh on 8/5/13.
+//  Created by Aryan Gh on 8/8/13.
 //  Copyright (c) 2013 Aryan Ghassemi. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
-#import "Engine.h"
 
-@interface Car : NSObject
-
-@property (nonatomic, strong) Engine *engine;
+@interface Engine : NSObject
 
 - (NSString *)startEngine;
 - (void)stopEngine;

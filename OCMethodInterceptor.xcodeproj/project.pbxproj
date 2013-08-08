@@ -23,6 +23,8 @@
 		15B079D817B0C80F00E1D126 /* OCMethodInterceptorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 15B079D717B0C80F00E1D126 /* OCMethodInterceptorTests.m */; };
 		15B079E417B0C82B00E1D126 /* NSObject+MethodInterceptor.m in Sources */ = {isa = PBXBuildFile; fileRef = 15B079E317B0C82B00E1D126 /* NSObject+MethodInterceptor.m */; };
 		15B079E817B0C89500E1D126 /* Car.m in Sources */ = {isa = PBXBuildFile; fileRef = 15B079E617B0C85900E1D126 /* Car.m */; };
+		15B07A0017B3C9B600E1D126 /* libOCMock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 15B079F817B3C9B600E1D126 /* libOCMock.a */; };
+		15B07A0C17B3CB9800E1D126 /* Engine.m in Sources */ = {isa = PBXBuildFile; fileRef = 15B07A0B17B3CB9800E1D126 /* Engine.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,6 +61,15 @@
 		15B079E317B0C82B00E1D126 /* NSObject+MethodInterceptor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+MethodInterceptor.m"; sourceTree = "<group>"; };
 		15B079E517B0C85900E1D126 /* Car.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Car.h; sourceTree = "<group>"; };
 		15B079E617B0C85900E1D126 /* Car.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Car.m; sourceTree = "<group>"; };
+		15B079F817B3C9B600E1D126 /* libOCMock.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libOCMock.a; sourceTree = "<group>"; };
+		15B07A0417B3C9DF00E1D126 /* NSNotificationCenter+OCMAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSNotificationCenter+OCMAdditions.h"; sourceTree = "<group>"; };
+		15B07A0517B3C9DF00E1D126 /* OCMArg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMArg.h; sourceTree = "<group>"; };
+		15B07A0617B3C9DF00E1D126 /* OCMConstraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMConstraint.h; sourceTree = "<group>"; };
+		15B07A0717B3C9DF00E1D126 /* OCMock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMock.h; sourceTree = "<group>"; };
+		15B07A0817B3C9DF00E1D126 /* OCMockObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMockObject.h; sourceTree = "<group>"; };
+		15B07A0917B3C9DF00E1D126 /* OCMockRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMockRecorder.h; sourceTree = "<group>"; };
+		15B07A0A17B3CB9800E1D126 /* Engine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Engine.h; sourceTree = "<group>"; };
+		15B07A0B17B3CB9800E1D126 /* Engine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Engine.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,6 +90,7 @@
 				15B079CB17B0C80E00E1D126 /* SenTestingKit.framework in Frameworks */,
 				15B079CC17B0C80E00E1D126 /* UIKit.framework in Frameworks */,
 				15B079CD17B0C80E00E1D126 /* Foundation.framework in Frameworks */,
+				15B07A0017B3C9B600E1D126 /* libOCMock.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -121,6 +133,8 @@
 				15B079E117B0C82B00E1D126 /* Source */,
 				15B079E517B0C85900E1D126 /* Car.h */,
 				15B079E617B0C85900E1D126 /* Car.m */,
+				15B07A0A17B3CB9800E1D126 /* Engine.h */,
+				15B07A0B17B3CB9800E1D126 /* Engine.m */,
 				15B079BB17B0C80E00E1D126 /* AppDelegate.h */,
 				15B079BC17B0C80E00E1D126 /* AppDelegate.m */,
 				15B079B317B0C80E00E1D126 /* Supporting Files */,
@@ -145,6 +159,8 @@
 		15B079D017B0C80E00E1D126 /* OCMethodInterceptorTests */ = {
 			isa = PBXGroup;
 			children = (
+				15B07A0217B3C9DF00E1D126 /* include */,
+				15B079F817B3C9B600E1D126 /* libOCMock.a */,
 				15B079D617B0C80F00E1D126 /* OCMethodInterceptorTests.h */,
 				15B079D717B0C80F00E1D126 /* OCMethodInterceptorTests.m */,
 				15B079D117B0C80E00E1D126 /* Supporting Files */,
@@ -168,6 +184,27 @@
 				15B079E317B0C82B00E1D126 /* NSObject+MethodInterceptor.m */,
 			);
 			path = Source;
+			sourceTree = "<group>";
+		};
+		15B07A0217B3C9DF00E1D126 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				15B07A0317B3C9DF00E1D126 /* OCMock */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		15B07A0317B3C9DF00E1D126 /* OCMock */ = {
+			isa = PBXGroup;
+			children = (
+				15B07A0417B3C9DF00E1D126 /* NSNotificationCenter+OCMAdditions.h */,
+				15B07A0517B3C9DF00E1D126 /* OCMArg.h */,
+				15B07A0617B3C9DF00E1D126 /* OCMConstraint.h */,
+				15B07A0717B3C9DF00E1D126 /* OCMock.h */,
+				15B07A0817B3C9DF00E1D126 /* OCMockObject.h */,
+				15B07A0917B3C9DF00E1D126 /* OCMockRecorder.h */,
+			);
+			path = OCMock;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -283,6 +320,7 @@
 				15B079BD17B0C80E00E1D126 /* AppDelegate.m in Sources */,
 				15B079E417B0C82B00E1D126 /* NSObject+MethodInterceptor.m in Sources */,
 				15B079E817B0C89500E1D126 /* Car.m in Sources */,
+				15B07A0C17B3CB9800E1D126 /* Engine.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -407,7 +445,17 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "OCMethodInterceptor/OCMethodInterceptor-Prefix.pch";
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/OCMethodInterceptorTests/include\"";
 				INFOPLIST_FILE = "OCMethodInterceptorTests/OCMethodInterceptorTests-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/OCMethodInterceptorTests\"",
+				);
+				OTHER_LDFLAGS = (
+					"-force_load",
+					"\"$(SRCROOT)/OCMethodInterceptorTests/libOCMock.a\"",
+					"-ObjC",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = octest;
@@ -424,7 +472,17 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "OCMethodInterceptor/OCMethodInterceptor-Prefix.pch";
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/OCMethodInterceptorTests/include\"";
 				INFOPLIST_FILE = "OCMethodInterceptorTests/OCMethodInterceptorTests-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/OCMethodInterceptorTests\"",
+				);
+				OTHER_LDFLAGS = (
+					"-force_load",
+					"\"$(SRCROOT)/OCMethodInterceptorTests/libOCMock.a\"",
+					"-ObjC",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = octest;
@@ -450,6 +508,7 @@
 				15B079DD17B0C80F00E1D126 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		15B079DE17B0C80F00E1D126 /* Build configuration list for PBXNativeTarget "OCMethodInterceptorTests" */ = {
 			isa = XCConfigurationList;
@@ -458,6 +517,7 @@
 				15B079E017B0C80F00E1D126 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
