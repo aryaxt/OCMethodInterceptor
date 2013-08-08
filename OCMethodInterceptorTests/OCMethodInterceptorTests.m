@@ -111,6 +111,19 @@
 	[self.engine verify];
 }
 
+- (void)testInterceptNonVoidMethodShouldReturnResultBack
+{
+	NSString *engineMessage = @"EngineStarted";
+	[[[self.engine stub] andReturn:engineMessage] startEngine];
+	
+	[self.car interceptMethod:@selector(startEngine) withExecuteBlock:^(id instance){
+				
+	}andExecutionType:BlockExecutionTypeBeforeOriginalCall];
+	
+	NSString *engineResult = [self.car startEngine];
+	STAssertTrue(engineMessage == engineResult, @"Did not return intercepted method result");
+}
+
 #pragma mark - Helpers -
 
 - (void)resetEngineMock
